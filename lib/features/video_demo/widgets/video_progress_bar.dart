@@ -30,13 +30,35 @@ class VideoProgressBar extends StatelessWidget {
         final totalDuration = state.controller!.value.duration;
         final currentPosition = state.position;
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Row(
+        return Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [Colors.black.withOpacity(0.8), Colors.transparent],
+            ),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Text(_formatDuration(currentPosition)), // الوقت الحالي
-              // تحديث داخل Widget الـ VideoProgressBar أو إضافة زر مستقل
-              Expanded(
+              // 1. Slider Row with Premium Theme
+              SliderTheme(
+                data: SliderTheme.of(context).copyWith(
+                  // padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  trackHeight: 2,
+
+                  thumbColor: Colors.redAccent,
+                  activeTrackColor: Colors.redAccent,
+                  inactiveTrackColor: Colors.white24,
+                  thumbShape: const RoundSliderThumbShape(
+                    enabledThumbRadius: 6.0,
+                  ),
+                  overlayColor: Colors.redAccent.withOpacity(0.2),
+                  overlayShape: const RoundSliderOverlayShape(
+                    overlayRadius: 12.0,
+                  ),
+                ),
                 child: Slider(
                   value: currentPosition.inSeconds.toDouble(),
                   min: 0.0,
@@ -45,10 +67,36 @@ class VideoProgressBar extends StatelessWidget {
                       context.read<VideoCubit>().seekTo(value),
                 ),
               ),
-
-              Text(_formatDuration(totalDuration)), // الوقت الإجمالي
-              SizedBox(width: 16),
-              VolumeControl(),
+              const SizedBox(height: 4),
+              // 2. Control & Info Row
+              Row(
+                children: [
+                  Text(
+                    _formatDuration(currentPosition),
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                  const Text(
+                    " / ",
+                    style: TextStyle(color: Colors.white54, fontSize: 12),
+                  ),
+                  Text(
+                    _formatDuration(totalDuration),
+                    style: const TextStyle(color: Colors.white54, fontSize: 12),
+                  ),
+                  const Spacer(),
+                  const VolumeControl(),
+                  const SizedBox(width: 8),
+                  GestureDetector(
+                    onTap: () => context.read<VideoCubit>().toggleFullScreen(),
+                    child: Icon(
+                      state.isFullScreen
+                          ? Icons.fullscreen_exit
+                          : Icons.fullscreen,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         );

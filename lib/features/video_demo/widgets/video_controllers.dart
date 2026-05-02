@@ -16,7 +16,7 @@ class VideoControls extends StatelessWidget {
           children: [
             // زر الرجوع 10 ثوانٍ
             IconButton(
-              icon: const Icon(Icons.replay_10, size: 40),
+              icon: const Icon(Icons.replay_10, size: 40, color: Colors.white),
               onPressed: () => context.read<VideoCubit>().seekBackward(),
             ),
 
@@ -27,13 +27,14 @@ class VideoControls extends StatelessWidget {
                     ? Icons.pause_circle_filled
                     : Icons.play_circle_fill,
                 size: 60,
+                color: Colors.white,
               ),
               onPressed: () => context.read<VideoCubit>().togglePlay(),
             ),
 
             // زر التقديم 10 ثوانٍ
             IconButton(
-              icon: const Icon(Icons.forward_10, size: 40),
+              icon: const Icon(Icons.forward_10, size: 40, color: Colors.white),
               onPressed: () => context.read<VideoCubit>().seekForward(),
             ),
           ],

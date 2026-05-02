@@ -11,6 +11,7 @@ class VideoState extends Equatable {
   final bool showControls;
   final bool isMuted;
   final double volume;
+  final bool isFullScreen;
   const VideoState({
     this.controller,
     this.status = VideoStatus.initial,
@@ -19,6 +20,7 @@ class VideoState extends Equatable {
     this.showControls = true,
     this.isMuted = false,
     this.volume = 1.0,
+    this.isFullScreen = false,
   });
 
   VideoState copyWith({
@@ -29,6 +31,7 @@ class VideoState extends Equatable {
     bool? showControls,
     bool? isMuted,
     double? volume,
+    bool? isFullScreen,
   }) {
     return VideoState(
       controller: controller ?? this.controller,
@@ -38,6 +41,7 @@ class VideoState extends Equatable {
       showControls: showControls ?? this.showControls,
       isMuted: isMuted ?? this.isMuted,
       volume: volume ?? this.volume,
+      isFullScreen: isFullScreen ?? this.isFullScreen,
     );
   }
 
@@ -50,5 +54,6 @@ class VideoState extends Equatable {
     showControls,
     isMuted,
     volume,
+    isFullScreen,
   ];
 }

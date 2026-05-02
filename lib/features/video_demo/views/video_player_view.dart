@@ -19,51 +19,72 @@ class VideoPlayerView extends StatelessWidget {
         'https://cdn.pixabay.com/video/2017/12/05/13232-246463976_tiny.mp4';
     return BlocProvider(
       create: (context) => VideoCubit()..initializePlayer(url1),
-      child: Scaffold(
-        appBar: AppBar(title: const Text("Clean Video Player")),
-        body: Center(
-          child: BlocBuilder<VideoCubit, VideoState>(
-            builder: (context, state) {
-              if (state.status == VideoStatus.loading) {
-                return const CircularProgressIndicator();
-              } else if (state.status == VideoStatus.ready) {
-                return GestureDetector(
-                  onTap: () => context.read<VideoCubit>().toggleControls(),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AspectRatio(
-                        aspectRatio: state.controller!.value.aspectRatio,
-                        child: Stack(
-                          alignment: Alignment.bottomCenter,
-                          children: [
-                            AnimatedOpacity(
-                              opacity: state.showControls ? 0.9 : 1.0,
-                              duration: const Duration(milliseconds: 300),
-                              child: VideoPlayer(state.controller!),
-                            ),
-                            state.showControls
-                                ? const Center(
-                                    child: VideoControls(),
-                                  ) // أزرار التشغيل في المنتصف
-                                : const SizedBox(),
-                          ],
-                        ),
-                      ),
-                      state.showControls
-                          ? const VideoProgressBar()
-                          : const SizedBox(), // شريط التقدم بالأسفل
-                    ],
-                  ),
-                );
-              } else if (state.status == VideoStatus.error) {
-                return const Text("حدث خطأ أثناء تحميل الفيديو");
-              }
-              return const Text("ابدأ التشغيل");
-            },
-          ),
-        ),
+      child: BlocBuilder<VideoCubit, VideoState>(
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: Colors.black,
+            appBar: state.isFullScreen
+                ? null
+                : AppBar(title: const Text("Clean Video Player"), elevation: 0),
+            body: OrientationBuilder(
+              builder: (context, orientation) {
+                // Sync orientation with cubit
+                context.read<VideoCubit>().updateOrientation(orientation);
+
+                return Center(child: _buildPlayerContent(context, state));
+              },
+            ),
+          );
+        },
       ),
     );
+  }
+
+  Widget _buildPlayerContent(BuildContext context, VideoState state) {
+    if (state.status == VideoStatus.loading) {
+      return const CircularProgressIndicator(color: Colors.white);
+    }
+
+    if (state.status == VideoStatus.error) {
+      return const Text(
+        "حدث خطأ أثناء تحميل الفيديو",
+        style: TextStyle(color: Colors.white),
+      );
+    }
+
+    if (state.status == VideoStatus.ready) {
+      return GestureDetector(
+        onTap: () => context.read<VideoCubit>().toggleControls(),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // 1. Video Layer
+            AspectRatio(
+              aspectRatio: state.controller!.value.aspectRatio,
+              child: VideoPlayer(state.controller!),
+            ),
+
+            // 2. Controls Overlay Layer
+            if (state.showControls) ...[
+              // Dimmed Background
+              Positioned.fill(child: Container(color: Colors.black26)),
+
+              // Center Controls (Play/Pause/Seek)
+              const VideoControls(),
+
+              // Bottom Progress Bar & Actions
+              const Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: VideoProgressBar(),
+              ),
+            ],
+          ],
+        ),
+      );
+    }
+
+    return const Text("ابدأ التشغيل", style: TextStyle(color: Colors.white));
   }
 }

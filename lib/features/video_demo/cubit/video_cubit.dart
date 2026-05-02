@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_player/video_player.dart';
 import 'video_state.dart';
@@ -121,6 +123,42 @@ class VideoCubit extends Cubit<VideoState> {
       // حفظ القيمة الحالية ثم الكتم
       _lastVolume = state.volume;
       setVolume(0.0);
+    }
+  }
+
+  void toggleFullScreen() {
+    final bool newFullScreen = !state.isFullScreen;
+
+    if (newFullScreen) {
+      // دخول وضع ملء الشاشة
+      // 1. تغيير اتجاه الشاشة إلى العرض (Landscape)
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+      // 2. إخفاء أشرطة النظام (Status Bar & Navigation Bar)
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    } else {
+      // الخروج من وضع ملء الشاشة
+      // 1. العودة للوضع الطولي (Portrait)
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+      // 2. إظهار أشرطة النظام مرة أخرى
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    }
+
+    emit(state.copyWith(isFullScreen: newFullScreen));
+  }
+
+  void updateOrientation(Orientation orientation) {
+    final bool isLandscape = orientation == Orientation.landscape;
+
+    if (isLandscape != state.isFullScreen) {
+      if (isLandscape) {
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+      } else {
+        SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+      }
+      emit(state.copyWith(isFullScreen: isLandscape));
     }
   }
 

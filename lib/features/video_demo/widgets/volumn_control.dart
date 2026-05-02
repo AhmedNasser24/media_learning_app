@@ -19,7 +19,8 @@ class VolumeControl extends StatelessWidget {
                 state.isMuted || state.volume == 0
                     ? Icons.volume_off
                     : Icons.volume_up,
-                color: Colors.deepPurpleAccent,
+                color: Colors.white,
+                size: 20,
               ),
               onTap: () => context.read<VideoCubit>().toggleMute(),
             ),
@@ -27,12 +28,16 @@ class VolumeControl extends StatelessWidget {
             // شريط التحكم في الدرجة
             SliderTheme(
               data: SliderTheme.of(context).copyWith(
-                padding: EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 4),
                 trackHeight: 2,
-                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
+                activeTrackColor: Colors.white,
+                inactiveTrackColor: Colors.white24,
+                thumbColor: Colors.white,
+                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 4),
+                overlayShape: const RoundSliderOverlayShape(overlayRadius: 10),
               ),
               child: SizedBox(
-                width: 80, // عرض صغير ليتناسب مع الزاوية
+                width: 60,
                 child: Slider(
                   value: state.volume,
                   onChanged: (value) =>
