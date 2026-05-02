@@ -2,16 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../cubit/recorder_cubit.dart';
+import '../cubit/audio_player_cubit.dart';
 import '../widgets/recorder_button.dart';
 import '../widgets/recorder_timer.dart';
+import '../widgets/audio_player_widget.dart';
 
 class RecorderView extends StatelessWidget {
   const RecorderView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => RecorderCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => RecorderCubit()),
+        BlocProvider(create: (context) => AudioPlayerCubit()),
+      ],
       child: Scaffold(
         appBar: AppBar(title: const Text("Voice Recorder")),
         body: Container(
@@ -25,7 +30,7 @@ class RecorderView extends StatelessWidget {
               const RecordButton(),
               const SizedBox(height: 20),
 
-              // عرض رسالة الخطأ إن وجدت
+              // عرض رسالة الخطأ أو مشغل الصوت
               BlocBuilder<RecorderCubit, RecorderState>(
                 builder: (context, state) {
                   if (state.errorMessage != null) {
@@ -34,13 +39,24 @@ class RecorderView extends StatelessWidget {
                       style: const TextStyle(color: Colors.red),
                     );
                   }
+
                   if (state.status == RecorderStatus.stopped &&
                       state.path != null) {
-                    return Text(
-                      "تم الحفظ في: ${state.path!.split('/').last}",
-                      style: const TextStyle(color: Colors.green),
+                    return Column(
+                      children: [
+                        const Text(
+                          "Recording saved!",
+                          style: TextStyle(
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        AudioPlayerWidget(path: state.path!),
+                      ],
                     );
                   }
+
                   return const SizedBox();
                 },
               ),
