@@ -14,6 +14,7 @@ class VideoPlayerView extends StatelessWidget {
   Widget build(BuildContext context) {
     const url1 =
         "https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4";
+    // ignore: unused_local_variable
     const url2 =
         'https://cdn.pixabay.com/video/2017/12/05/13232-246463976_tiny.mp4';
     return BlocProvider(
@@ -37,7 +38,7 @@ class VideoPlayerView extends StatelessWidget {
                           alignment: Alignment.bottomCenter,
                           children: [
                             AnimatedOpacity(
-                              opacity: state.showControls ? 0.4 : 1.0,
+                              opacity: state.showControls ? 0.9 : 1.0,
                               duration: const Duration(milliseconds: 300),
                               child: VideoPlayer(state.controller!),
                             ),

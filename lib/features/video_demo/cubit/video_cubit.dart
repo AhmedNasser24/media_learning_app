@@ -104,6 +104,15 @@ class VideoCubit extends Cubit<VideoState> {
     }
   }
 
+  // أضف هذه الدالة
+  void toggleMute() {
+    if (state.controller == null) return;
+
+    final newMuted = !state.isMuted;
+    state.controller!.setVolume(newMuted ? 0.0 : 1.0);
+    emit(state.copyWith(isMuted: newMuted));
+  }
+
   @override
   Future<void> close() {
     state.controller?.dispose(); // تنظيف الذاكرة

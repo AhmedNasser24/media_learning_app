@@ -9,12 +9,14 @@ class VideoState extends Equatable {
   final bool isPlaying;
   final Duration position;
   final bool showControls;
+  final bool isMuted;
   const VideoState({
     this.controller,
     this.status = VideoStatus.initial,
     this.isPlaying = false,
     this.position = Duration.zero,
-    this.showControls = false,
+    this.showControls = true,
+    this.isMuted = false,
   });
 
   VideoState copyWith({
@@ -23,6 +25,7 @@ class VideoState extends Equatable {
     bool? isPlaying,
     Duration? position,
     bool? showControls,
+    bool? isMuted,
   }) {
     return VideoState(
       controller: controller ?? this.controller,
@@ -30,6 +33,7 @@ class VideoState extends Equatable {
       isPlaying: isPlaying ?? this.isPlaying,
       position: position ?? this.position,
       showControls: showControls ?? this.showControls,
+      isMuted: isMuted ?? this.isMuted,
     );
   }
 
@@ -40,5 +44,6 @@ class VideoState extends Equatable {
     isPlaying,
     position,
     showControls,
+    isMuted,
   ];
 }

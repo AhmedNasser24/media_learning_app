@@ -34,6 +34,14 @@ class VideoProgressBar extends StatelessWidget {
           child: Row(
             children: [
               Text(_formatDuration(currentPosition)), // الوقت الحالي
+              // تحديث داخل Widget الـ VideoProgressBar أو إضافة زر مستقل
+              IconButton(
+                icon: Icon(
+                  state.isMuted ? Icons.volume_off : Icons.volume_up,
+                  color: Colors.deepPurple,
+                ),
+                onPressed: () => context.read<VideoCubit>().toggleMute(),
+              ),
               Expanded(
                 child: Slider(
                   value: currentPosition.inSeconds.toDouble(),
