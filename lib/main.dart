@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'features/video_demo/views/video_player_view.dart';
+import 'features/record/views/record_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
       debugShowCheckedModeBanner: false,
-      home: VideoPlayerView(),
+      home: const RecorderView(),
     );
   }
 }
