@@ -164,6 +164,9 @@ class VideoCubit extends Cubit<VideoState> {
 
   @override
   Future<void> close() {
+    // إعادة الشاشة للوضع الطبيعي عند الخروج
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     state.controller?.dispose(); // تنظيف الذاكرة
     return super.close();
   }
