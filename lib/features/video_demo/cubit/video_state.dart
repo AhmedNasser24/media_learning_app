@@ -8,12 +8,13 @@ class VideoState extends Equatable {
   final VideoStatus status;
   final bool isPlaying;
   final Duration position;
-
+  final bool showControls;
   const VideoState({
     this.controller,
     this.status = VideoStatus.initial,
     this.isPlaying = false,
     this.position = Duration.zero,
+    this.showControls = false,
   });
 
   VideoState copyWith({
@@ -21,15 +22,23 @@ class VideoState extends Equatable {
     VideoStatus? status,
     bool? isPlaying,
     Duration? position,
+    bool? showControls,
   }) {
     return VideoState(
       controller: controller ?? this.controller,
       status: status ?? this.status,
       isPlaying: isPlaying ?? this.isPlaying,
       position: position ?? this.position,
+      showControls: showControls ?? this.showControls,
     );
   }
 
   @override
-  List<Object?> get props => [controller, status, isPlaying, position];
+  List<Object?> get props => [
+    controller,
+    status,
+    isPlaying,
+    position,
+    showControls,
+  ];
 }

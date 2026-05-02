@@ -26,23 +26,34 @@ class VideoPlayerView extends StatelessWidget {
               if (state.status == VideoStatus.loading) {
                 return const CircularProgressIndicator();
               } else if (state.status == VideoStatus.ready) {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AspectRatio(
-                      aspectRatio: state.controller!.value.aspectRatio,
-                      child: Stack(
-                        alignment: Alignment.bottomCenter,
-                        children: [
-                          VideoPlayer(state.controller!),
-                          const Center(
-                            child: VideoControls(),
-                          ), // أزرار التشغيل في المنتصف
-                        ],
+                return GestureDetector(
+                  onTap: () => context.read<VideoCubit>().toggleControls(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AspectRatio(
+                        aspectRatio: state.controller!.value.aspectRatio,
+                        child: Stack(
+                          alignment: Alignment.bottomCenter,
+                          children: [
+                            AnimatedOpacity(
+                              opacity: state.showControls ? 0.4 : 1.0,
+                              duration: const Duration(milliseconds: 300),
+                              child: VideoPlayer(state.controller!),
+                            ),
+                            state.showControls
+                                ? const Center(
+                                    child: VideoControls(),
+                                  ) // أزرار التشغيل في المنتصف
+                                : const SizedBox(),
+                          ],
+                        ),
                       ),
-                    ),
-                    const VideoProgressBar(), // شريط التقدم بالأسفل
-                  ],
+                      state.showControls
+                          ? const VideoProgressBar()
+                          : const SizedBox(), // شريط التقدم بالأسفل
+                    ],
+                  ),
                 );
               } else if (state.status == VideoStatus.error) {
                 return const Text("حدث خطأ أثناء تحميل الفيديو");

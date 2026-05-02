@@ -90,6 +90,20 @@ class VideoCubit extends Cubit<VideoState> {
     emit(state.copyWith(position: newPosition));
   }
 
+  void toggleControls() {
+    emit(state.copyWith(showControls: !state.showControls));
+
+    // إذا أصبحت الأدوات ظاهرة، سنقوم بإخفائها تلقائياً بعد 3 ثوانٍ
+    if (state.showControls) {
+      Future.delayed(const Duration(seconds: 3), () {
+        // نتأكد أن الـ Cubit لم يتم إغلاقه وأن المستخدم لم يغلقها يدوياً بالفعل
+        if (state.showControls) {
+          emit(state.copyWith(showControls: false));
+        }
+      });
+    }
+  }
+
   @override
   Future<void> close() {
     state.controller?.dispose(); // تنظيف الذاكرة
