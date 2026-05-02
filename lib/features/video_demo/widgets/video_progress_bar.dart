@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../cubit/video_cubit.dart';
 import '../cubit/video_state.dart';
+import 'volumn_control.dart';
 
 class VideoProgressBar extends StatelessWidget {
   const VideoProgressBar({super.key});
@@ -35,13 +36,6 @@ class VideoProgressBar extends StatelessWidget {
             children: [
               Text(_formatDuration(currentPosition)), // الوقت الحالي
               // تحديث داخل Widget الـ VideoProgressBar أو إضافة زر مستقل
-              IconButton(
-                icon: Icon(
-                  state.isMuted ? Icons.volume_off : Icons.volume_up,
-                  color: Colors.deepPurple,
-                ),
-                onPressed: () => context.read<VideoCubit>().toggleMute(),
-              ),
               Expanded(
                 child: Slider(
                   value: currentPosition.inSeconds.toDouble(),
@@ -51,7 +45,10 @@ class VideoProgressBar extends StatelessWidget {
                       context.read<VideoCubit>().seekTo(value),
                 ),
               ),
+
               Text(_formatDuration(totalDuration)), // الوقت الإجمالي
+              SizedBox(width: 16),
+              VolumeControl(),
             ],
           ),
         );

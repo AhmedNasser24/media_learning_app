@@ -4,7 +4,7 @@ import 'video_state.dart';
 
 class VideoCubit extends Cubit<VideoState> {
   VideoCubit() : super(const VideoState());
-
+  double _lastVolume = 1.0;
   // أضف هذه الدالة داخل VideoCubit لتحديث موضع الفيديو
   void _listenToPosition() {
     final controller = state.controller;
@@ -104,13 +104,24 @@ class VideoCubit extends Cubit<VideoState> {
     }
   }
 
-  // أضف هذه الدالة
+  void setVolume(double value) {
+    if (state.controller == null) return;
+
+    state.controller!.setVolume(value);
+    emit(state.copyWith(volume: value, isMuted: value == 0));
+  }
+
   void toggleMute() {
     if (state.controller == null) return;
 
-    final newMuted = !state.isMuted;
-    state.controller!.setVolume(newMuted ? 0.0 : 1.0);
-    emit(state.copyWith(isMuted: newMuted));
+    if (state.isMuted) {
+      // إعادة الصوت للقيمة السابقة
+      setVolume(_lastVolume > 0 ? _lastVolume : 0.5);
+    } else {
+      // حفظ القيمة الحالية ثم الكتم
+      _lastVolume = state.volume;
+      setVolume(0.0);
+    }
   }
 
   @override
